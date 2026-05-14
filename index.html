@@ -1,0 +1,514 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ShopSmarter — Modest Fashion, Filtered for You</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,600;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --brand: #E8407A;
+    --brand-light: #FDE8EF;
+    --brand-mid: #F4A7C3;
+    --text: #1A1A1A;
+    --muted: #8E8E93;
+    --white: #ffffff;
+    --chip: #F2F2F7;
+  }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    color: var(--text);
+    background: var(--white);
+    overflow-x: hidden;
+  }
+
+  /* NAV */
+  nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 20px 48px;
+    background: rgba(255,255,255,0.88);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid rgba(232,64,122,0.08);
+  }
+  .nav-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 600;
+    color: var(--brand);
+    letter-spacing: -0.3px;
+  }
+  .nav-cta {
+    background: var(--text);
+    color: white;
+    padding: 10px 22px;
+    border-radius: 50px;
+    font-size: 14px; font-weight: 500;
+    text-decoration: none;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .nav-cta:hover { background: var(--brand); transform: translateY(-1px); }
+
+  /* HERO */
+  .hero {
+    min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center;
+    padding: 120px 24px 80px;
+    background: linear-gradient(160deg, #fff 0%, var(--brand-light) 60%, #fff 100%);
+    position: relative;
+    overflow: hidden;
+  }
+
+  .hero::before {
+    content: '';
+    position: absolute; inset: 0;
+    background: radial-gradient(ellipse 80% 60% at 50% 80%, rgba(244,167,195,0.2) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .hero-badge {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--brand-light);
+    border: 1px solid rgba(232,64,122,0.2);
+    color: var(--brand);
+    padding: 8px 18px;
+    border-radius: 50px;
+    font-size: 13px; font-weight: 500;
+    margin-bottom: 28px;
+    animation: fadeUp 0.6s ease both;
+  }
+
+  .hero h1 {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(48px, 8vw, 88px);
+    font-weight: 600;
+    line-height: 1.05;
+    letter-spacing: -1px;
+    margin-bottom: 24px;
+    animation: fadeUp 0.6s 0.1s ease both;
+  }
+
+  .hero h1 em {
+    font-style: italic;
+    color: var(--brand);
+  }
+
+  .hero p {
+    font-size: clamp(16px, 2.5vw, 20px);
+    color: var(--muted);
+    max-width: 520px;
+    line-height: 1.65;
+    margin-bottom: 44px;
+    font-weight: 300;
+    animation: fadeUp 0.6s 0.2s ease both;
+  }
+
+  .hero-buttons {
+    display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+    animation: fadeUp 0.6s 0.3s ease both;
+  }
+
+  .btn-primary {
+    background: var(--text);
+    color: white;
+    padding: 16px 36px;
+    border-radius: 50px;
+    font-size: 16px; font-weight: 500;
+    text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(26,26,26,0.15);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(26,26,26,0.2); }
+
+  .btn-secondary {
+    background: white;
+    color: var(--text);
+    padding: 16px 36px;
+    border-radius: 50px;
+    font-size: 16px; font-weight: 500;
+    text-decoration: none;
+    border: 1.5px solid rgba(26,26,26,0.12);
+    transition: transform 0.2s, border-color 0.2s;
+  }
+  .btn-secondary:hover { transform: translateY(-2px); border-color: var(--brand); color: var(--brand); }
+
+  /* FLOATING CARDS */
+  .hero-visual {
+    position: relative;
+    margin-top: 72px;
+    width: 100%; max-width: 800px;
+    height: 280px;
+    animation: fadeUp 0.6s 0.4s ease both;
+  }
+
+  .card {
+    position: absolute;
+    background: white;
+    border-radius: 20px;
+    padding: 16px;
+    box-shadow: 0 8px 40px rgba(0,0,0,0.10);
+    display: flex; align-items: center; gap: 12px;
+  }
+
+  .card-emoji { font-size: 36px; }
+  .card-info .store { font-size: 11px; color: var(--muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.5px; }
+  .card-info .name { font-size: 14px; font-weight: 500; color: var(--text); margin-top: 2px; }
+  .card-info .price { font-size: 14px; color: var(--brand); font-weight: 600; margin-top: 2px; }
+  .card-badge {
+    position: absolute; top: -8px; right: -8px;
+    background: var(--brand); color: white;
+    font-size: 10px; font-weight: 700;
+    padding: 4px 8px; border-radius: 20px;
+  }
+
+  .card-1 { left: 5%; top: 20px; animation: float1 4s ease-in-out infinite; }
+  .card-2 { left: 50%; transform: translateX(-50%); top: 0; animation: float2 5s ease-in-out infinite; }
+  .card-3 { right: 5%; top: 40px; animation: float3 4.5s ease-in-out infinite; }
+
+  .filter-chip {
+    position: absolute;
+    background: var(--brand);
+    color: white;
+    padding: 10px 18px;
+    border-radius: 50px;
+    font-size: 13px; font-weight: 500;
+    box-shadow: 0 4px 16px rgba(232,64,122,0.3);
+  }
+  .chip-1 { bottom: 20px; left: 15%; animation: float2 3.5s ease-in-out infinite; }
+  .chip-2 { bottom: 50px; right: 18%; animation: float1 4s 0.5s ease-in-out infinite; }
+
+  /* FEATURES */
+  .features {
+    padding: 100px 24px;
+    max-width: 1100px;
+    margin: 0 auto;
+  }
+
+  .section-label {
+    text-align: center;
+    font-size: 12px; font-weight: 600;
+    letter-spacing: 2px;
+    color: var(--brand);
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .section-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: clamp(32px, 5vw, 52px);
+    font-weight: 600;
+    text-align: center;
+    margin-bottom: 64px;
+    line-height: 1.15;
+  }
+
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+
+  .feature-card {
+    background: var(--chip);
+    border-radius: 24px;
+    padding: 36px 32px;
+    transition: transform 0.3s, box-shadow 0.3s;
+  }
+  .feature-card:hover { transform: translateY(-4px); box-shadow: 0 16px 48px rgba(0,0,0,0.08); }
+  .feature-card:nth-child(2) { background: var(--brand-light); }
+  .feature-card:nth-child(4) { background: var(--brand-light); }
+
+  .feature-icon { font-size: 36px; margin-bottom: 20px; display: block; }
+  .feature-title {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 24px; font-weight: 600;
+    margin-bottom: 10px;
+  }
+  .feature-desc { font-size: 15px; color: var(--muted); line-height: 1.65; font-weight: 300; }
+
+  /* HOW IT WORKS */
+  .how {
+    background: var(--text);
+    color: white;
+    padding: 100px 24px;
+    text-align: center;
+  }
+
+  .how .section-label { color: var(--brand-mid); }
+  .how .section-title { color: white; margin-bottom: 64px; }
+
+  .steps {
+    display: flex;
+    justify-content: center;
+    gap: 0;
+    max-width: 900px;
+    margin: 0 auto;
+    flex-wrap: wrap;
+  }
+
+  .step {
+    flex: 1; min-width: 200px;
+    padding: 0 24px;
+    position: relative;
+  }
+
+  .step:not(:last-child)::after {
+    content: '→';
+    position: absolute; right: -8px; top: 28px;
+    color: var(--brand-mid);
+    font-size: 24px;
+  }
+
+  .step-num {
+    width: 56px; height: 56px;
+    background: var(--brand);
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 22px; font-weight: 600;
+    color: white;
+    margin: 0 auto 20px;
+  }
+
+  .step-title { font-size: 17px; font-weight: 500; margin-bottom: 10px; }
+  .step-desc { font-size: 14px; color: rgba(255,255,255,0.55); line-height: 1.6; font-weight: 300; }
+
+  /* PRIVACY */
+  .privacy {
+    padding: 80px 24px;
+    max-width: 800px;
+    margin: 0 auto;
+    text-align: center;
+  }
+
+  .privacy .section-title { margin-bottom: 24px; }
+  .privacy p { font-size: 15px; color: var(--muted); line-height: 1.75; font-weight: 300; margin-bottom: 16px; }
+  .privacy h3 { font-family: 'Cormorant Garamond', serif; font-size: 22px; margin: 32px 0 12px; text-align: left; }
+  .privacy p { text-align: left; }
+
+  /* CTA SECTION */
+  .cta-section {
+    padding: 100px 24px;
+    text-align: center;
+    background: linear-gradient(135deg, var(--brand-light) 0%, #fff 100%);
+  }
+
+  .cta-section .section-title { margin-bottom: 16px; }
+  .cta-section p { font-size: 17px; color: var(--muted); margin-bottom: 40px; font-weight: 300; }
+
+  /* FOOTER */
+  footer {
+    background: var(--chip);
+    padding: 40px 48px;
+    display: flex; align-items: center; justify-content: space-between;
+    flex-wrap: wrap; gap: 16px;
+  }
+
+  .footer-logo {
+    font-family: 'Cormorant Garamond', serif;
+    font-size: 20px; font-weight: 600;
+    color: var(--brand);
+  }
+
+  footer p { font-size: 13px; color: var(--muted); }
+  footer a { color: var(--brand); text-decoration: none; font-size: 13px; }
+
+  /* ANIMATIONS */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+
+  @keyframes float1 {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-12px); }
+  }
+  @keyframes float2 {
+    0%, 100% { transform: translateX(-50%) translateY(0px); }
+    50%       { transform: translateX(-50%) translateY(-16px); }
+  }
+  @keyframes float3 {
+    0%, 100% { transform: translateY(0px); }
+    50%       { transform: translateY(-10px); }
+  }
+
+  @media (max-width: 600px) {
+    nav { padding: 16px 20px; }
+    .hero { padding: 100px 20px 60px; }
+    .step:not(:last-child)::after { display: none; }
+    footer { flex-direction: column; text-align: center; padding: 32px 20px; }
+    .hero-visual { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<!-- NAV -->
+<nav>
+  <div class="nav-logo">ShopSmarter</div>
+  <a href="mailto:jakegardanier@gmail.com" class="nav-cta">Contact Us</a>
+</nav>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-badge">✦ Coming Soon to the App Store</div>
+  <h1>Shop modest.<br><em>Shop smarter.</em></h1>
+  <p>The AI-powered shopping app that filters every store you love to only show items that match your coverage preferences — automatically.</p>
+  <div class="hero-buttons">
+    <a href="mailto:jakegardanier@gmail.com" class="btn-primary">Get Early Access</a>
+    <a href="#features" class="btn-secondary">Learn More</a>
+  </div>
+
+  <div class="hero-visual">
+    <div class="card card-1">
+      <div class="card-emoji">👗</div>
+      <div class="card-info">
+        <div class="store">Madewell</div>
+        <div class="name">Linen Midi Wrap Dress</div>
+        <div class="price">$148</div>
+      </div>
+      <div class="card-badge">✓ Covered</div>
+    </div>
+
+    <div class="card card-2">
+      <div class="card-emoji">🌸</div>
+      <div class="card-info">
+        <div class="store">Anthropologie</div>
+        <div class="name">Sun Protection Maxi</div>
+        <div class="price">$89</div>
+      </div>
+      <div class="card-badge">NEW</div>
+    </div>
+
+    <div class="card card-3">
+      <div class="card-emoji">👔</div>
+      <div class="card-info">
+        <div class="store">Aritzia</div>
+        <div class="name">Relaxed Linen Shirt</div>
+        <div class="price">$89</div>
+      </div>
+      <div class="card-badge">✓ Covered</div>
+    </div>
+
+    <div class="filter-chip chip-1">✦ Modest filter active</div>
+    <div class="filter-chip chip-2">🖤 Tattoo coverage on</div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section class="features" id="features">
+  <div class="section-label">Why ShopSmarter</div>
+  <h2 class="section-title">Everything you need.<br>Nothing you don't.</h2>
+
+  <div class="features-grid">
+    <div class="feature-card">
+      <span class="feature-icon">✦</span>
+      <div class="feature-title">AI Coverage Filter</div>
+      <p class="feature-desc">Set your coverage preferences once. Our AI analyzes every product image and filters your feed automatically — no manual tagging required.</p>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">🖤</span>
+      <div class="feature-title">Tattoo Coverage</div>
+      <p class="feature-desc">Draw where your tattoos are on a body silhouette. The AI compares your drawing against each outfit to make sure they stay covered.</p>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">🛍️</span>
+      <div class="feature-title">All Your Stores</div>
+      <p class="feature-desc">Add up to 10 of your favorite stores and browse all their new arrivals in one unified feed — no more switching between apps.</p>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">🎁</span>
+      <div class="feature-title">Earn Rewards</div>
+      <p class="feature-desc">Create a free account and earn reward points every time you save an item or shop through the app.</p>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">🔍</span>
+      <div class="feature-title">AI Search</div>
+      <p class="feature-desc">Search anything — "modest linen dress under $100" — and our AI finds matching items across all your stores at once.</p>
+    </div>
+
+    <div class="feature-card">
+      <span class="feature-icon">💗</span>
+      <div class="feature-title">Save & Sync</div>
+      <p class="feature-desc">Heart any item to save it. Sign in and your saved items, stores, and preferences sync across all your devices.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section class="how" id="how">
+  <div class="section-label">How It Works</div>
+  <h2 class="section-title">Three steps to a<br>perfectly filtered feed.</h2>
+
+  <div class="steps">
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-title">Add your stores</div>
+      <p class="step-desc">Pick up to 10 of your favorite fashion retailers to build your personalized feed.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-title">Set your coverage</div>
+      <p class="step-desc">Tap the body zones you need covered. Set neckline, sleeve, and length preferences.</p>
+    </div>
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-title">Shop smarter</div>
+      <p class="step-desc">Browse a perfectly filtered feed. Every item shown already meets your preferences.</p>
+    </div>
+  </div>
+</section>
+
+<!-- PRIVACY POLICY -->
+<section class="privacy" id="privacy">
+  <div class="section-label">Legal</div>
+  <h2 class="section-title">Privacy Policy</h2>
+  <p>Last updated: May 2026</p>
+
+  <h3>Information We Collect</h3>
+  <p>ShopSmarter collects your email address and password when you create an account. We also store your saved items, favorite stores, and coverage preferences to sync across your devices.</p>
+
+  <h3>How We Use Your Information</h3>
+  <p>We use your information solely to provide the ShopSmarter service — syncing your preferences and saved items, personalizing your feed, and sending you relevant updates if you opt in. We do not sell your personal information to third parties.</p>
+
+  <h3>Third-Party Services</h3>
+  <p>ShopSmarter uses Firebase for authentication and data storage, and OpenAI's API to analyze product images. We use affiliate links from partner networks — when you purchase through our app, we may earn a small commission at no extra cost to you.</p>
+
+  <h3>Data Retention</h3>
+  <p>You can delete your account at any time by contacting us at <a href="mailto:jakegardanier@gmail.com">jakegardanier@gmail.com</a>. We will delete all your personal data within 30 days.</p>
+
+  <h3>Contact</h3>
+  <p>Questions? Email us at <a href="mailto:jakegardanier@gmail.com">jakegardanier@gmail.com</a></p>
+</section>
+
+<!-- CTA -->
+<section class="cta-section">
+  <div class="section-label">Get Started</div>
+  <h2 class="section-title">Ready to shop smarter?</h2>
+  <p>ShopSmarter is coming soon to the App Store. Sign up for early access.</p>
+  <a href="mailto:jakegardanier@gmail.com" class="btn-primary">Get Early Access →</a>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div class="footer-logo">ShopSmarter</div>
+  <p>© 2026 ShopSmarter. All rights reserved.</p>
+  <div style="display:flex;gap:20px;">
+    <a href="#privacy">Privacy Policy</a>
+    <a href="mailto:jakegardanier@gmail.com">Contact</a>
+  </div>
+</footer>
+
+</body>
+</html>
